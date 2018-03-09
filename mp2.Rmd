@@ -1,6 +1,6 @@
 ---
 title: "Mini-Project 2"
-author: "Jemimah Charles, Maria de Villeneuve"
+author: "Jemimah Charles, Maria de Villeneuve :)"
 date: "October 31, 2017"
 output: html_document
 ---
