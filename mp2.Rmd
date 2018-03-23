@@ -2,26 +2,27 @@
 title: "Mini-Project 2"
 author: "Jemimah Charles, Maria de Villeneuve :)"
 date: "October 31, 2017"
-output: html_document
+output: 
+ html_document:
+    code_folding: hide
 ---
-
-
 ## Loading the data
-
 This project is so interesting and relevant to my life!
-
-```{r, include=FALSE}
-
-
+```{r, warning = FALSE, message = FALSE}
 library(tidyverse)
+
+together <- inner_join(contributions, committees)
+together
+ggplot(together, aes(y=transaction_amt, x=state, color=factor(cmte_party_affiliation)))+
+  theme(panel.border = element_blank())+
+  scale_y_continuous(expand=c(0,0))+
+  geom_line()+
+  labs(x = "State", y = "Transaction Amount ($)", color="Political Party")
+```
+```
+facet_grid(cmte_party_affiliation~state)
 glimpse(house_elections)
 glimpse(candidates)
 glimpse(committees)
 glimpse(contributions)
-```
-```
-load("house_elections.rda")
-load("candidates.rda")
-load("committees.rda")
-load("contributions.rda")
 ```
