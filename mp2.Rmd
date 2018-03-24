@@ -15,9 +15,14 @@ load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 
-glimpse(contributions)
-together <- inner_join(contributions, committees)
+n2 <- house_elections %>%
+  select(ge_winner, party)%>%
+  filter(ge_winner == c("W","N"), party == c("D", "R"))%>%
+  group_by(party)
 
+n2
+
+together <- inner_join(contributions, committees)
 t2 <- together %>%
   select(transaction_amt, cmte_party_affiliation) %>%
   filter(!is.na(transaction_amt), cmte_party_affiliation == c("DEM","REP"))%>%
@@ -26,8 +31,9 @@ t2 <- together %>%
 t2
 
 ggplot(t2, aes(y = amnt_sum, x = cmte_party_affiliation))+
-  geom_bar(stat="identity")+
+  geom_bar(stat="identity", aes(fill = cmte_party_affiliation))+
+  scale_fill_manual(values=c("blue","red"))+
   theme(panel.grid.major.x = element_blank())+
-  labs(x = "Party", y = "Transaction Amount ($)")
+  labs(x = "Party", y = "Transaction Amount ($)", fill = "Party")
 ```
 
