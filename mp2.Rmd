@@ -18,8 +18,8 @@ load("contributions.rda")
 together <- inner_join(contributions, committees)
 together <- filter(together, state == c("IL","MO","DC","OK","KS"), !is.na(transaction_amt)) %>%
   mutate(transaction_amt = abs(transaction_amt))%>%
-  select(transaction_amt, state, cmte_party_affiliation)
-together
+  select(transaction_amt, state, cmte_party_affiliation) 
+gather(together, "transaction_amt","state")
 
 ggplot(together, aes(y=transaction_amt, x=state, color=factor(cmte_party_affiliation)))+
   theme(panel.border = element_blank())+
