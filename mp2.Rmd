@@ -16,11 +16,17 @@ load("committees.rda")
 load("contributions.rda")
 
 together <- inner_join(contributions, committees)
-together <- filter(together, state == c("IL","MO","DC","OK","KS"), !is.na(transaction_amt)) %>%
-  mutate(transaction_amt = abs(transaction_amt))%>%
-  select(transaction_amt, state, cmte_party_affiliation) 
-gather(together, "transaction_amt","state")
 
+t2 <- together %>%
+  select(transaction_amt, cmte_party_affiliation) %>%
+  filter(!is.na(transaction_amt)) %>%
+  mutate(transaction_amt = abs(transaction_amt)) %>%
+  group_by(cmte_party_affiliation)%>%
+  summarise(amnt_sum = sum(transaction_amt))
+
+t2
+```
+```
 ggplot(together, aes(y=transaction_amt, x=state, color=factor(cmte_party_affiliation)))+
   theme(panel.border = element_blank())+
   scale_y_continuous(expand=c(0,0))+
