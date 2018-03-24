@@ -7,7 +7,7 @@ output:
     code_folding: hide
 ---
 ## Loading the data
-This project is so interesting and relevant to my life!
+
 ```{r, warning = FALSE, message = FALSE}
 library(tidyverse)
 load("house_elections.rda")
@@ -20,23 +20,12 @@ together <- inner_join(contributions, committees)
 t2 <- together %>%
   select(transaction_amt, cmte_party_affiliation) %>%
   filter(!is.na(transaction_amt)) %>%
-  mutate(transaction_amt = abs(transaction_amt)) %>%
   group_by(cmte_party_affiliation)%>%
-  summarise(amnt_sum = sum(transaction_amt))
-
+  summarise(amnt_sum = sum(abs(transaction_amt)))
 t2
+
+ggplot(t2, aes(y = amnt_sum, x = cmte_party_affiliation))+
+  geom_bar(aes(fill=cmte_party_affiliation), stat="identity")+
+  labs(x = "Party", y = "Transaction Amount ($)")
 ```
-```
-ggplot(together, aes(y=transaction_amt, x=state, color=factor(cmte_party_affiliation)))+
-  theme(panel.border = element_blank())+
-  scale_y_continuous(expand=c(0,0))+
-  geom_line()+
-  labs(x = "State", y = "Transaction Amount ($)", color="Political Party")
-```
-```
-facet_grid(cmte_party_affiliation~state)
-glimpse(house_elections)
-glimpse(candidates)
-glimpse(committees)
-glimpse(contributions)
-```
+
