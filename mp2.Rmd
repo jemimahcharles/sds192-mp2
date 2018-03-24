@@ -20,7 +20,7 @@ together <- inner_join(contributions, committees)
 
 t2 <- together %>%
   select(transaction_amt, cmte_party_affiliation) %>%
-  filter(!is.na(transaction_amt), cmte_party_affiliation == c("CIT","CON","DEM","GRN","IND","NNE","REP"))%>%
+  filter(!is.na(transaction_amt), cmte_party_affiliation == c("DEM","REP"))%>%
   group_by(cmte_party_affiliation)%>%
   summarise(amnt_sum = sum(abs(transaction_amt)))
 t2
