@@ -15,17 +15,19 @@ load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 
+glimpse(contributions)
 together <- inner_join(contributions, committees)
 
 t2 <- together %>%
   select(transaction_amt, cmte_party_affiliation) %>%
-  filter(!is.na(transaction_amt)) %>%
+  filter(!is.na(transaction_amt), cmte_party_affiliation == c("CIT","CON","DEM","GRN","IND","NNE","REP"))%>%
   group_by(cmte_party_affiliation)%>%
   summarise(amnt_sum = sum(abs(transaction_amt)))
 t2
 
 ggplot(t2, aes(y = amnt_sum, x = cmte_party_affiliation))+
-  geom_bar(aes(fill=cmte_party_affiliation), stat="identity")+
+  geom_bar(stat="identity")+
+  theme(panel.grid.major.x = element_blank())+
   labs(x = "Party", y = "Transaction Amount ($)")
 ```
 
