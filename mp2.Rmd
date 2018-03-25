@@ -37,4 +37,7 @@ ggplot(t2, aes(y = amnt_sum, x = cmte_party_affiliation))+
   theme(panel.grid.major.x = element_blank())+
   labs(x = "Party", y = "Transaction Amount ($)", fill = "Party")
 ```
+Using the GitHub repository [^1] Jemimah and I were curious to understand how much of an impact donations have on the end result of an election. We therefore took all the different contributions, from a party to a candidate and from an individual to a party, to see the transaction amount donated to each party. We decided to only compare Republicans and Democrats since those are always the two most relevant parties and only they are on the same scale of donations received. On our graph we can see that the Republican party gets over twice as many donations. Will that affect the winning party of the election?  
+
+[^1]: https://github.com/jemimahcharles/sds192-mp2.git
 
