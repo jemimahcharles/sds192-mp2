@@ -6,7 +6,7 @@ output:
  html_document:
     code_folding: hide
 ---
-## Loading the data
+## Money, Power and Political Gain.  
 
 ```{r, warning = FALSE, message = FALSE}
 library(tidyverse)
@@ -15,11 +15,12 @@ load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 
+glimpse(house_elections)
 n2 <- house_elections %>%
   select(ge_winner, party)%>%
   filter(ge_winner == c("W","N"), party == c("D", "R"))%>%
-  group_by(party)
-
+  group_by(party)%>%
+  summarise(winner = sum(ge_winner == "W"))
 n2
 
 together <- inner_join(contributions, committees)
@@ -27,12 +28,12 @@ t2 <- together %>%
   select(transaction_amt, cmte_party_affiliation) %>%
   filter(!is.na(transaction_amt), cmte_party_affiliation == c("DEM","REP"))%>%
   group_by(cmte_party_affiliation)%>%
-  summarise(amnt_sum = sum(abs(transaction_amt)))
+  summarise(amnt_sum = sum( abs( transaction_amt)))
 t2
 
 ggplot(t2, aes(y = amnt_sum, x = cmte_party_affiliation))+
   geom_bar(stat="identity", aes(fill = cmte_party_affiliation))+
-  scale_fill_manual(values=c("blue","red"))+
+  scale_fill_manual(values = c("blue","red"))+
   theme(panel.grid.major.x = element_blank())+
   labs(x = "Party", y = "Transaction Amount ($)", fill = "Party")
 ```
