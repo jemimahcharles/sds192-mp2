@@ -1,43 +1,62 @@
 ---
 title: "Mini-Project 2"
 author: "Jemimah Charles, Maria de Villeneuve :)"
-date: "October 31, 2017"
+date: "March 25, 2018"
 output: 
  html_document:
     code_folding: hide
 ---
-## Money, Power and Political Gain.  
+## Money, Power and Political Gain  
+Using the GitHub repository[^1] Jemimah and I were curious to understand how much of an impact donation have on the end result of an election between Republicans and Democrats. We therefore took all the different contributions, from a party to a candidate and from an individual to a party, to see the transaction amount donated to each party. We decided to only compare Republicans and Democrats since those are always the two most relevant parties and only they are on the same scale of donations received. On our graph we can see that the Republican party gets over twice as many donations, but this does not directly correlate to the amount of wins. We can assume that that is due to the fact that often the most wealthy people chose to vote for and donate to Republicans. Will that affect the winning party of the election? 
 
+[^1]: https://github.com/jemimahcharles/sds192-mp2.git
 ```{r, warning = FALSE, message = FALSE}
 library(tidyverse)
+#Load all of necessary data
 load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 
-glimpse(house_elections)
+#n2 is the data set created to find the amount of wins of elections of both Republicans and Democrats
 n2 <- house_elections %>%
   select(ge_winner, party)%>%
-  filter(ge_winner == c("W","N"), party == c("D", "R"))%>%
+  filter(ge_winner == c("W"), party == c("D", "R"))%>%
   group_by(party)%>%
-  summarise(winner = sum(ge_winner == "W"))
-n2
+  summarise(dem = sum(party == "D"), rep = sum(party == "R"), total_num = sum(dem + rep))
 
+#The graph of n2, ploting the amount of wins of Democrats and Republicans. Red is used to show the Republican Party and blue for the Democrats, because this is the official colors of both parties. 
+ggplot(n2, aes(y = total_num , x = party))+
+  geom_bar(stat="identity", aes(fill = party))+
+  scale_fill_manual(values = c("blue","red"))+
+  theme(panel.grid.major.x = element_blank())+
+  labs(x = "Party", y = "Number of Elections", fill = "Party")
+
+#together finds how much money is given to the Democrat and Republican party by combining the data sets contributions and committees. It summarises the different amounts given to Democratic and Republican parties, grouped by those parties. 
 together <- inner_join(contributions, committees)
 t2 <- together %>%
   select(transaction_amt, cmte_party_affiliation) %>%
   filter(!is.na(transaction_amt), cmte_party_affiliation == c("DEM","REP"))%>%
   group_by(cmte_party_affiliation)%>%
   summarise(amnt_sum = sum( abs( transaction_amt)))
-t2
 
+#Plots the total amount given to each party by Repulican and Democrats. This is shown through the Parties official colors. 
 ggplot(t2, aes(y = amnt_sum, x = cmte_party_affiliation))+
   geom_bar(stat="identity", aes(fill = cmte_party_affiliation))+
   scale_fill_manual(values = c("blue","red"))+
   theme(panel.grid.major.x = element_blank())+
   labs(x = "Party", y = "Transaction Amount ($)", fill = "Party")
 ```
-Using the GitHub repository [^1] Jemimah and I were curious to understand how much of an impact donations have on the end result of an election. We therefore took all the different contributions, from a party to a candidate and from an individual to a party, to see the transaction amount donated to each party. We decided to only compare Republicans and Democrats since those are always the two most relevant parties and only they are on the same scale of donations received. On our graph we can see that the Republican party gets over twice as many donations. Will that affect the winning party of the election?  
 
-[^1]: https://github.com/jemimahcharles/sds192-mp2.git
+When looking at the wins, the Republicans do have more wins than the Democrats. However, surprisingly, there is not a large discrepancy between the numbers. It seems that the amount the party receives does not end up changing people's minds much. It does leave more means for advertising but at that level of rivalry within two very different parties, advertising will not be what makes the difference in getting a person to switch their vote. We can suppose that since Republicans and Democrats have such fundamentally opposite views there are very few things that would cause them to switch their votes to the other side, especially not something like money which cannot buy beliefs. However, the discrepancy in the wins could be explained by the swing voters. If someone's beliefs are not necessarily aligned with one or the other, having more means to advertise, advocate for change and have an impact might shift those people to vote Republican.
 
+We think however it is relevant to point out that our data analysis could be somewhat inaccurate because some people donate directly to candidates, if it was not clear what party they were affiliated to yet, it might have not appeared in that party's contributions' count. However we believe that that would not shift the contributions significantly enough to make our observations irrelevant since the contribution levels are very different in comparison to the winning ratio between Republicans and Democrats.
+
+So in conclusion, do we really find that in the case of elections money is equal to power? Thankfully with this data we can see it is not. The influence of money still is present for political gain but even very large sums of added campaign money do not change most voters ideals. 
+
+|Method          |koRpus      |stringi       |
+|:---------------|:-----------|:-------------|
+|Word count      |442         |440           |
+|Character count |2577        |2576          |
+|Sentence count  |18          |Not available |
+|Reading time    |2.2 minutes |2.2 minutes   |
